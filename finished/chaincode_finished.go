@@ -102,13 +102,13 @@ type AuditTrial struct {
 }
 
 type TransEvent struct{
-EventNo				string  `json:"eventNo"`
-TransRefNo   		string  `json:"transRefNo"`
-UserId				string 	`json:"userId"`
-IpAdd   			string  `json:"ipAdd"`
-EventDateTime   	string  `json:"eventDateTime"`
-EventDesc   		string  `json:"eventDesc"`
-Trans_branch		string  `json:"trans_branch"`
+eventNo				string  `json:"eventNo"`
+transRefNo   		string  `json:"transRefNo"`
+userId				string 	`json:"userId"`
+ipAdd   			string  `json:"ipAdd"`
+eventDateTime   	string  `json:"eventDateTime"`
+eventDesc   		string  `json:"eventDesc"`
+trans_branch		string  `json:"trans_branch"`
 }
 
 
@@ -144,16 +144,16 @@ func CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		return nil, nil
 	}
 
-	fmt.Println("TransactionInitiation object refno variable value is : %s\n",trans_obj.transRefNo);
+	fmt.Println("TransactionInitiation object refno variable value is : %s\n",trans_obj.TransRefNo);
 	
 	// saving transactionInitiation and maker into map
 	GetTransactionInitiationMap(stub)	
 
 	//put transaction initiation data and maker data into map
-	trans_Init_map[trans_obj.transRefNo] = trans_obj	
+	trans_Init_map[trans_obj.TransRefNo] = trans_obj	
 
 	SetTransactionInitiationMap(stub)	
-	//SetDateTime(stub,trans_obj.transRefNo,trans_obj.makerDate)
+	//SetDateTime(stub,trans_obj.TransRefNo,trans_obj.MakerDate)
 	
 	fmt.Printf("transaction initiation map : %v \n", trans_Init_map)	
 	fmt.Println("Transaction initiation Successfully saved")	
@@ -380,7 +380,7 @@ func UpdateEventDesc(stub shim.ChaincodeStubInterface, args []string) error {
 
 		object=trans_Init_map[refNo]
 		//update event desc 
-		object.eventDesc=event_desc
+		object.EventDesc=event_desc
 
 		//update new struct values
 		trans_Init_map[refNo]=object
@@ -425,7 +425,7 @@ func ListRefnoForBranch(stub shim.ChaincodeStubInterface, args []string) ([]byte
 	//var refNo = args[1]
 
 	for _, value := range trans_Init_map {
-			if value.trans_init_branch  == args[0] {				
+			if value.Trans_init_branch  == args[0] {				
 					object = value				
 			}					
 	}
@@ -461,8 +461,8 @@ func GetTransactionInitDetailsForRefAndMaker(stub shim.ChaincodeStubInterface, a
 	var refNo = args[1]
 
 	for _, value := range trans_Init_map {
-		if value.transRefNo  == refNo {
-			if value.trans_init_branch  == value.maker_branch {				
+		if value.TransRefNo  == refNo {
+			if value.Trans_init_branch  == value.Maker_branch {				
 					object = value				
 			}			
 		}
@@ -499,7 +499,7 @@ func GetTransactionInitDetailsForRef(stub shim.ChaincodeStubInterface, args []st
 	var refNo = args[1]
 
 	for _, value := range trans_Init_map {
-		if value.transRefNo  == refNo {							
+		if value.TransRefNo  == refNo {							
 					object = value		
 					//object = append(object, value)						
 		}
@@ -542,7 +542,7 @@ func GetAllDetailsForRef_AuditTrial(stub shim.ChaincodeStubInterface, args []str
 	var refNo = args[0]
 
 	for _, value := range trans_Init_map {
-		if value.transRefNo  == refNo {
+		if value.TransRefNo  == refNo {
 			object = value
 		}
 	}
