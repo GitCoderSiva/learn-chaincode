@@ -119,6 +119,8 @@ var l2Auth_map map[string]l2Auth
 var date_map map[time.Time]string  // key : date and time ; value : ref no array
 var trans_event_map map[string]TransEvent
 
+var stringvar_map map[string]string
+
 //Invoke methods starts here 
 
 func CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -135,6 +137,13 @@ func CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 	fmt.Println("Args [0] is : %s\n",args[0])
 	fmt.Println("Args [1] is : %s\n",args[1])
+	
+	err := stub.PutState(args[0], []byte(args[1]))
+    if err != nil {
+        fmt.Println("Could not save loan application to ledger %s\n", err)
+        return nil, err
+    }
+	
 	
 	//unmarshal transaction initiation data from UI to "transactionInitiation" struct
 	err = json.Unmarshal([]byte(args[1]), &trans_obj)
