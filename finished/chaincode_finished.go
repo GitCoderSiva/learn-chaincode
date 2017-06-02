@@ -133,6 +133,9 @@ func CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		return nil, errors.New("Expected atleast one arguments for initiate Transaction")
 	}
 
+	fmt.Println("Args [0] is : %s\n",args[0])
+	fmt.Println("Args [1] is : %s\n",args[1])
+	
 	//unmarshal transaction initiation data from UI to "transactionInitiation" struct
 	err = json.Unmarshal([]byte(args[1]), &trans_obj)
 	if err != nil {
@@ -140,6 +143,8 @@ func CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 		return nil, nil
 	}
 
+	fmt.Println("TransactionInitiation object refno variable value is : %s\n",trans_obj.transRefNo);
+	
 	// saving transactionInitiation and maker into map
 	GetTransactionInitiationMap(stub)	
 
