@@ -562,7 +562,7 @@ func GetAllDetailsForRef_AuditTrial(stub shim.ChaincodeStubInterface, args []str
 	GetSupervisorMap(stub)
 
 	for _, value := range supervisor_map {
-		if value.transRefNo  == refNo {
+		if value.TransRefNo  == refNo {
 			object1 = value
 		}
 	}
