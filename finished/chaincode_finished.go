@@ -65,50 +65,50 @@ type transactionInitiation struct {
 }
 
 type amlCheck struct {
-	transRefNo   string  `json:"ref_no"`
-	supUserID    string  `json:"sup_userid"`
-	supIPAddr    string  `json:"sup_ipaddr"`
-	supDate      string  `json:"sup_date"`
-	supStatus	 string  `json:"sup_status"`
+	TransRefNo   string  `json:"ref_no"`
+	SupUserID    string  `json:"sup_userid"`
+	SupIPAddr    string  `json:"sup_ipaddr"`
+	SupDate      string  `json:"sup_date"`
+	SupStatus	 string  `json:"sup_status"`
 }
 
 type l1Auth struct {
-	transRefNo  	string  `json:"ref_no"`
-	l1UserID     	string  `json:"l1_userid"`
-	l1IPAddr     	string  `json:"l1_ipaddr"`
-	l1Date       	string  `json:"l1_date"`
-	l1Status	 	string  `json:"l1_status"`
+	TransRefNo  	string  `json:"ref_no"`
+	L1UserID     	string  `json:"l1_userid"`
+	L1IPAddr     	string  `json:"l1_ipaddr"`
+	L1Date       	string  `json:"l1_date"`
+	L1Status	 	string  `json:"l1_status"`
 }
 
 type l2Auth struct {
-	transRefNo   		string  `json:"ref_no"`
-	l2UserID    		string  `json:"l2_userid"`
-	l2IPAddr     		string  `json:"l2_ipaddr"`
-	l2Date       		string  `json:"l2_date"`
-	l2Status	 		string  `json:"l2_status"`
-	finacleDate 	 	string  `json:"finacle_date"`
-	finalcleStatus 	 	string  `json:"finacle_status"`
+	TransRefNo   		string  `json:"ref_no"`
+	L2UserID    		string  `json:"l2_userid"`
+	L2IPAddr     		string  `json:"l2_ipaddr"`
+	L2Date       		string  `json:"l2_date"`
+	L2Status	 		string  `json:"l2_status"`
+	FinacleDate 	 	string  `json:"finacle_date"`
+	FinalcleStatus 	 	string  `json:"finacle_status"`
 	TCSBancsDate 		string  `json:"tcs_bancsdate"`
 	TCSBancsStatus 		string  `json:"tcs_bancsstatus"`
 	PSGDate      		string  `json:"psg_date"`	
 	PSGStatus    		string  `json:"psg_status"`
 }
 
-type AuditTrial struct {
-	trans_init     transactionInitiation `json:"trans_init"`
-	aml_check      amlCheck              `json:"aml_check"`
-	l1_auth        l1Auth                `json:"l1_auth"`
-	l2_auth        l2Auth                `json:"l2_auth"`
+type auditTrial struct {
+	Trans_init     transactionInitiation `json:"trans_init"`
+	Aml_check      amlCheck              `json:"aml_check"`
+	L1_auth        l1Auth                `json:"l1_auth"`
+	L2_auth        l2Auth                `json:"l2_auth"`
 }
 
-type TransEvent struct{
-eventNo				string  `json:"eventNo"`
-transRefNo   		string  `json:"transRefNo"`
-userId				string 	`json:"userId"`
-ipAdd   			string  `json:"ipAdd"`
-eventDateTime   	string  `json:"eventDateTime"`
-eventDesc   		string  `json:"eventDesc"`
-trans_branch		string  `json:"trans_branch"`
+type transEvent struct{
+EventNo				string  `json:"eventNo"`
+TransRefNo   		string  `json:"transRefNo"`
+UserId				string 	`json:"userId"`
+IpAdd   			string  `json:"ipAdd"`
+EventDateTime   	string  `json:"eventDateTime"`
+EventDesc   		string  `json:"eventDesc"`
+Trans_branch		string  `json:"trans_branch"`
 }
 
 
@@ -118,7 +118,7 @@ var supervisor_map map[string]amlCheck
 var l1Auth_map map[string]l1Auth
 var l2Auth_map map[string]l2Auth
 var date_map map[time.Time]string  // key : date and time ; value : ref no array
-var trans_event_map map[string]TransEvent
+var trans_event_map map[string]transEvent
 
 //Invoke methods starts here 
 
@@ -163,7 +163,7 @@ func CreateTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 func CreateTransEvent(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-	var trans_event_obj TransEvent
+	var trans_event_obj transEvent
 	var err error
 
 	fmt.Println("Entering TransactionEvent")
@@ -184,7 +184,7 @@ func CreateTransEvent(stub shim.ChaincodeStubInterface, args []string) ([]byte, 
 	GetTransEventMap(stub)
 
 	//put TransactionEvent data data into map
-	trans_event_map[trans_event_obj.transRefNo] = trans_event_obj
+	trans_event_map[trans_event_obj.TransRefNo] = trans_event_obj
 
 	setTransEventMap(stub)
 	
@@ -217,7 +217,7 @@ func UpdateSupervisorDetails(stub shim.ChaincodeStubInterface, args1 []string) e
 	GetSupervisorMap(stub)
 
 	//put supervisor data data into map
-	supervisor_map[sup_obj.transRefNo] = sup_obj
+	supervisor_map[sup_obj.TransRefNo] = sup_obj
 	
 	SetSupervisorMap(stub)
 	
@@ -250,7 +250,7 @@ func UpdateL1AuthorizerDetails(stub shim.ChaincodeStubInterface, args1 []string)
 	GetL1AuthMap(stub)
 
 	//put l1Authorizer data into map
-	l1Auth_map[l1_obj.transRefNo] = l1_obj
+	l1Auth_map[l1_obj.TransRefNo] = l1_obj
 	
 	SetL1AuthMap(stub)
 	
@@ -283,7 +283,7 @@ func UpdateL2AuthorizerDetails(stub shim.ChaincodeStubInterface, args1 []string)
 	GetL2AuthMap(stub)
 
 	//put supervisor data and system processed data into map
-	l2Auth_map[l2Auth_obj.transRefNo] = l2Auth_obj
+	l2Auth_map[l2Auth_obj.TransRefNo] = l2Auth_obj
 	
 	SetL2AuthMap(stub)
 	
@@ -522,7 +522,7 @@ func GetAllDetailsForRef_AuditTrial(stub shim.ChaincodeStubInterface, args []str
 	var object2 l1Auth 
 	var object3 l2Auth 
 	var bytes []byte
-	var fin_object AuditTrial
+	var fin_object auditTrial
 	var err error
 
 	fmt.Println("Entering getTransactionInitDetailsForRefstub")
@@ -583,7 +583,7 @@ func GetAllDetailsForRef_AuditTrial(stub shim.ChaincodeStubInterface, args []str
 	GetL1AuthMap(stub)
 
 	for _, value := range l1Auth_map {
-		if value.transRefNo  == refNo {
+		if value.TransRefNo  == refNo {
 			object2 = value
 		}
 	}
@@ -604,7 +604,7 @@ func GetAllDetailsForRef_AuditTrial(stub shim.ChaincodeStubInterface, args []str
 	GetL2AuthMap(stub)
 
 	for _, value := range l2Auth_map {
-		if value.transRefNo  == refNo {
+		if value.TransRefNo  == refNo {
 			object3 = value
 		}
 	}
@@ -616,10 +616,10 @@ func GetAllDetailsForRef_AuditTrial(stub shim.ChaincodeStubInterface, args []str
 		return nil, err
 	}
 
-	fin_object.trans_init=object
-	fin_object.aml_check=object1
-	fin_object.l1_auth=object2
-	fin_object.l2_auth=object3
+	fin_object.Trans_init=object
+	fin_object.Aml_check=object1
+	fin_object.L1_auth=object2
+	fin_object.L2_auth=object3
 
 	// Return AuditTrial Details
 	bytes, err = json.Marshal(&fin_object)
@@ -711,7 +711,7 @@ func ListAllTransactions(stub shim.ChaincodeStubInterface, args []string) ([]byt
 func ListAllTransactionEvent(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	var err error
 	var bytesRead []byte
-	var trans_event_list []TransEvent	
+	var trans_event_list []transEvent	
 
 	fmt.Println("Entering AllTransactionEvents")
 
@@ -792,7 +792,7 @@ func GetTransEventMap(stub shim.ChaincodeStubInterface) error {
 		}
 	} else {
 		fmt.Printf("TransEventMap map does not exist. To be created. \n")
-		trans_event_map = make(map[string]TransEvent)
+		trans_event_map = make(map[string]transEvent)
 		bytesread, err = json.Marshal(&trans_event_map)
 		if err != nil {
 			fmt.Printf("Failed to initialize  TransEventMap for block chain :%v\n", err)
