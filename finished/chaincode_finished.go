@@ -184,7 +184,7 @@ func CreateTransEvent(stub shim.ChaincodeStubInterface, args []string) ([]byte, 
 	GetTransEventMap(stub)
 
 	//put TransactionEvent data data into map
-	trans_event_map[trans_event_obj.TransRefNo] = trans_event_obj
+	trans_event_map[trans_event_obj.EventNo] = trans_event_obj
 
 	setTransEventMap(stub)
 	
@@ -737,6 +737,36 @@ func ListAllTransactionEvent(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	return bytesRead, nil
 }
 
+func ListAllTransactionEventForBranch(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var err error
+	var bytesRead []byte
+	var trans_event_list []transEvent	
+
+	fmt.Println("Entering AllTransactionEvents")
+
+	err = GetTransEventMap(stub)
+
+	if err != nil {
+		fmt.Printf("Unable to read the list of AllTransactionEvents : %s\n", err)
+		return nil, err
+	}
+
+	for _, value := range trans_event_map {
+			if value.Trans_branch == args[0] {
+				trans_event_list = append(trans_event_list, value)
+		}
+	}
+	fmt.Printf("list of AllTransactionEvents : %v\n", trans_event_list)
+	bytesRead, err = json.Marshal(&trans_event_list)
+	fmt.Printf("list of AllTransactionEvents after Marshal : %v\n", bytesRead)
+	if err != nil {
+		fmt.Printf("Unable to return the list of AllTransactionEvents : %s\n", err)
+		return nil, err
+	}
+
+	return bytesRead, nil
+}
+
 
 //Query methods ends here 
 
@@ -1027,7 +1057,10 @@ func (t *SBITransaction) Query(stub shim.ChaincodeStubInterface, function string
 		return ListAllTransactions(stub, args)
 	} else if function == "ListAllTransactionEvent" {
 		return ListAllTransactionEvent(stub)
+	} else if function == "ListAllTransactionEventForBranch" {
+		return ListAllTransactionEventForBranch(stub, args)
 	}
+
 	return nil, nil
 }
 
