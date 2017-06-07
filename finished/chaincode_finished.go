@@ -254,7 +254,7 @@ func UpdateL1AuthorizerDetails(stub shim.ChaincodeStubInterface, args1 []string)
 	
 	SetL1AuthMap(stub)
 	
-	fmt.Printf("L1Authorizer map : %v \n", supervisor_map)	
+	fmt.Printf("L1Authorizer map : %v \n", l1Auth_map)	
 	fmt.Println("L1Authorizer details Successfully updated")	
 	
 	return nil
@@ -1034,6 +1034,23 @@ func SetL2AuthMap(stub shim.ChaincodeStubInterface) error {
 	return nil
 }
 
+// DeleteAllTransEvent will create a new TransEventMap
+func DeleteAllTransEvent(stub shim.ChaincodeStubInterface) ([]byte, error) {
+	var err error
+	var byteArray []byte
+
+	fmt.Println("DeleteAllTransEvents will create a new instance of TransEventMap")
+	err = GetTransEventMap(stub)
+	trans_event_map = make(map[string]transEvent)
+	byteArray, err = json.Marshal(&trans_event_map)
+	err = setTransEventMap(stub)
+	err = GetTransEventMap(stub)
+	fmt.Printf("TransEventMap created : %v\n", trans_event_map)
+
+	return byteArray, err
+
+}
+
 // Init sets up the chaincode
 func (t *SBITransaction) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("Inside INIT for test chaincode")
@@ -1078,6 +1095,8 @@ func (t *SBITransaction) Invoke(stub shim.ChaincodeStubInterface, function strin
 		return nil, UpdateEventDesc(stub,args)
 	} else if function == "CreateTransEvent" {
 		return CreateTransEvent(stub,args)
+	} else if function == "DeleteAllTransEvent" {
+		return DeleteAllTransEvent(stub)
 	}
 	
 	fmt.Println("Function not found")
